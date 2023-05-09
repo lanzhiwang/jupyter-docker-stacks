@@ -8,11 +8,19 @@
 
 Jupyter Docker Stacks are a set of ready-to-run [Docker images](https://hub.docker.com/u/jupyter) containing Jupyter applications and interactive computing tools.
 You can use a stack image to do any of the following (and more):
+Jupyter Docker Stacks 是一组随时可用的 Docker 镜像，其中包含 Jupyter 应用程序和交互式计算工具。 您可以使用堆栈图像执行以下任何操作（以及更多操作）：
 
 - Start a personal Jupyter Server with the JupyterLab frontend (default)
+  使用 JupyterLab 前端启动个人 Jupyter 服务器（默认）
+
 - Run JupyterLab for a team using JupyterHub
+  使用 JupyterHub 为团队运行 JupyterLab
+
 - Start a personal Jupyter Notebook server in a local Docker container
+  在本地 Docker 容器中启动个人 Jupyter Notebook 服务器
+
 - Write your own project Dockerfile
+  编写自己的项目 Dockerfile
 
 ## Quick Start
 
@@ -21,32 +29,43 @@ by simply clicking the preceding link.
 Otherwise, the examples below may help you get started if you [have Docker installed](https://docs.docker.com/get-docker/),
 know [which Docker image](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html) you want to use
 and want to launch a single Jupyter Server in a container.
+您可以通过单击前面的链接在 mybinder.org 上尝试相对较新的 jupyter/base-notebook 图像构建。 否则，如果您安装了 Docker，下面的示例可能会帮助您入门，知道您要使用哪个 Docker 映像并希望在容器中启动单个 Jupyter 服务器。
 
 The [User Guide on ReadTheDocs](https://jupyter-docker-stacks.readthedocs.io/en/latest/) describes additional uses and features in detail.
+ReadTheDocs 上的用户指南详细描述了其他用途和功能。
 
 **Example 1:**
 
 This command pulls the `jupyter/scipy-notebook` image tagged `2023-02-28` from Docker Hub if it is not already present on the local host.
 It then starts a container running a Jupyter Server and exposes the container's internal port `8888` to port `10000` of the host machine:
+如果本地主机上尚未存在标记为 2023-02-28 的 jupyter/scipy-notebook 图像，则此命令会从 Docker Hub 中拉取该图像。 然后它启动一个运行 Jupyter Server 的容器，并将容器的内部端口 8888 暴露给主机的端口 10000：
 
 ```bash
 docker run -p 10000:8888 jupyter/scipy-notebook:2023-02-28
 ```
 
 You can modify the port on which the container's port is exposed by [changing the value of the `-p` option](https://docs.docker.com/engine/reference/run/#expose-incoming-ports) to `-p 8888:8888`.
+您可以通过将 -p 选项的值更改为 -p 8888:8888 来修改容器端口公开的端口。
 
 Visiting `http://<hostname>:10000/?token=<token>` in a browser loads JupyterLab,
 where:
+在浏览器中访问 http://<hostname>:10000/?token=<token> 加载 JupyterLab，其中：
 
 - `hostname` is the name of the computer running Docker
+  hostname 是运行 Docker 的计算机的名称
+
 - `token` is the secret token printed in the console.
+  token 是打印在控制台中的秘密令牌。
 
 The container remains intact for restart after the Jupyter Server exits.
+在 Jupyter 服务器退出后，容器保持完整以重新启动。
+
 
 **Example 2:**
 
 This command pulls the `jupyter/datascience-notebook` image tagged `2023-02-28` from Docker Hub if it is not already present on the local host.
 It then starts an _ephemeral_ container running a Jupyter Server and exposes the server on host port 10000.
+如果本地主机上尚未存在标记为 2023-02-28 的 jupyter/datascience-notebook 图像，此命令会从 Docker Hub 中拉取该图像。 然后它启动一个运行 Jupyter 服务器的临时容器，并在主机端口 10000 上公开该服务器。
 
 ```bash
 docker run -it --rm -p 10000:8888 -v "${PWD}":/home/jovyan/work jupyter/datascience-notebook:2023-02-28
@@ -54,12 +73,15 @@ docker run -it --rm -p 10000:8888 -v "${PWD}":/home/jovyan/work jupyter/datascie
 
 The use of the `-v` flag in the command mounts the current working directory on the host (`${PWD}` in the example command) as `/home/jovyan/work` in the container.
 The server logs appear in the terminal.
+在命令中使用 -v 标志将主机上的当前工作目录（示例命令中的 ${PWD}）挂载为容器中的 /home/jovyan/work。 服务器日志出现在终端中。
 
 Visiting `http://<hostname>:10000/?token=<token>` in a browser loads JupyterLab.
+在浏览器中访问 http://<hostname>:10000/?token=<token> 加载 JupyterLab。
 
 Due to the usage of [the flag `--rm`](https://docs.docker.com/engine/reference/run/#clean-up---rm) Docker automatically cleans up the container and removes the file
 system when the container exits, but any changes made to the `~/work` directory and its files in the container will remain intact on the host.
 [The `-it` flag](https://docs.docker.com/engine/reference/commandline/run/#name) allocates pseudo-TTY.
+由于标志 --rm 的使用，Docker 会在容器退出时自动清理容器并删除文件系统，但是对 ~/work 目录及其在容器中的文件所做的任何更改都将在主机上保持不变。 -it 标志分配伪 TTY。
 
 ## Contributing
 

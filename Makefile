@@ -41,6 +41,39 @@ help:
 	@echo "Replace % with a stack directory name (e.g., make build/minimal-notebook)"
 	@echo
 	@grep -E '^[a-zA-Z0-9_%/-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+# $ make help
+# jupyter/docker-stacks
+# =====================
+# Replace % with a stack directory name (e.g., make build/minimal-notebook)
+
+# build-aarch64                  build aarch64 stacks
+# build-all                      build all stacks
+# build/%                        build the latest image for a stack using the system's architecture
+# check-outdated-all             check all the stacks for outdated packages
+# check-outdated/%               check the outdated mamba/conda packages in a stack and produce a report (experimental)
+# cont-clean-all                 clean all containers (stop + rm)
+# cont-rm-all                    remove all containers
+# cont-stop-all                  stop all containers
+# docs                           build HTML documentation
+# hook-all                       run post-build hooks for all images
+# hook/%                         run post-build hooks for an image
+# img-clean                      clean dangling and jupyter images
+# img-list                       list jupyter images
+# img-rm-dang                    remove dangling images (tagged None)
+# img-rm                         remove jupyter images
+# linkcheck-docs                 check broken links
+# pre-commit-all                 run pre-commit hook on all files
+# pre-commit-install             set up the git hook scripts
+# pull-all                       pull all images
+# pull/%                         pull a jupyter image
+# push-all                       push all tagged images
+# push/%                         push all tags for a jupyter image
+# run-shell/%                    run a bash in interactive mode in a stack
+# run-sudo-shell/%               run a bash in interactive mode as root in a stack
+# test-all                       test all stacks
+# test/%                         run tests against a stack
+
+
 
 
 
@@ -49,14 +82,81 @@ build/%: ## build the latest image for a stack using the system's architecture
 	docker build $(DOCKER_BUILD_ARGS) --rm --force-rm -t $(OWNER)/$(notdir $@):latest ./$(notdir $@) --build-arg OWNER=$(OWNER)
 	@echo -n "Built image size: "
 	@docker images $(OWNER)/$(notdir $@):latest --format "{{.Size}}"
+
 build-all: $(foreach I, $(ALL_IMAGES), build/$(I)) ## build all stacks
+# $ make build-all -n --just-print
+# docker build  --rm --force-rm -t jupyter/docker-stacks-foundation:latest ./docker-stacks-foundation --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/docker-stacks-foundation:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/base-notebook:latest ./base-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/base-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/minimal-notebook:latest ./minimal-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/minimal-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/r-notebook:latest ./r-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/r-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/scipy-notebook:latest ./scipy-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/scipy-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/tensorflow-notebook:latest ./tensorflow-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/tensorflow-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/datascience-notebook:latest ./datascience-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/datascience-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/pyspark-notebook:latest ./pyspark-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/pyspark-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/all-spark-notebook:latest ./all-spark-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/all-spark-notebook:latest --format "{{.Size}}"
+
+
+
 build-aarch64: $(foreach I, $(AARCH64_IMAGES), build/$(I)) ## build aarch64 stacks
+# $ make build-aarch64 -n --just-print
+# docker build  --rm --force-rm -t jupyter/docker-stacks-foundation:latest ./docker-stacks-foundation --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/docker-stacks-foundation:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/base-notebook:latest ./base-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/base-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/minimal-notebook:latest ./minimal-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/minimal-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/r-notebook:latest ./r-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/r-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/scipy-notebook:latest ./scipy-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/scipy-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/datascience-notebook:latest ./datascience-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/datascience-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/pyspark-notebook:latest ./pyspark-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/pyspark-notebook:latest --format "{{.Size}}"
+# docker build  --rm --force-rm -t jupyter/all-spark-notebook:latest ./all-spark-notebook --build-arg OWNER=jupyter
+# echo -n "Built image size: "
+# docker images jupyter/all-spark-notebook:latest --format "{{.Size}}"
+
 
 
 check-outdated/%: ## check the outdated mamba/conda packages in a stack and produce a report (experimental)
 	@TEST_IMAGE="$(OWNER)/$(notdir $@)" pytest tests/base-notebook/test_outdated.py
 check-outdated-all: $(foreach I, $(ALL_IMAGES), check-outdated/$(I)) ## check all the stacks for outdated packages
-
+# $ make check-outdated-all -n --just-print
+# TEST_IMAGE="jupyter/docker-stacks-foundation" pytest tests/base-notebook/test_outdated.py
+# TEST_IMAGE="jupyter/base-notebook" pytest tests/base-notebook/test_outdated.py
+# TEST_IMAGE="jupyter/minimal-notebook" pytest tests/base-notebook/test_outdated.py
+# TEST_IMAGE="jupyter/r-notebook" pytest tests/base-notebook/test_outdated.py
+# TEST_IMAGE="jupyter/scipy-notebook" pytest tests/base-notebook/test_outdated.py
+# TEST_IMAGE="jupyter/tensorflow-notebook" pytest tests/base-notebook/test_outdated.py
+# TEST_IMAGE="jupyter/datascience-notebook" pytest tests/base-notebook/test_outdated.py
+# TEST_IMAGE="jupyter/pyspark-notebook" pytest tests/base-notebook/test_outdated.py
+# TEST_IMAGE="jupyter/all-spark-notebook" pytest tests/base-notebook/test_outdated.py
 
 
 cont-clean-all: cont-stop-all cont-rm-all ## clean all containers (stop + rm)

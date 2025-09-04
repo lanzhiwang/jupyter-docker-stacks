@@ -1,8 +1,12 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-
-# docker build  --rm --force-rm -t jupyter/minimal-notebook:latest ./minimal-notebook --build-arg OWNER=jupyter
+# docker build \
+# --rm \
+# --force-rm \
+# -t jupyter/minimal-notebook:latest \
+# ./minimal-notebook \
+# --build-arg OWNER=jupyter
 
 ARG OWNER=jupyter
 # Step 1/10 : ARG OWNER=jupyter

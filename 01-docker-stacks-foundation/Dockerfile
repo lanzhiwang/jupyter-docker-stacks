@@ -4,8 +4,12 @@
 # Ubuntu 22.04 (jammy)
 # https://hub.docker.com/_/ubuntu/tags?page=1&name=jammy
 
-
-# docker build --rm --force-rm -t jupyter/docker-stacks-foundation:latest ./docker-stacks-foundation --build-arg OWNER=jupyter
+# docker build \
+# --rm \
+# --force-rm \
+# -t jupyter/docker-stacks-foundation:latest \
+# ./docker-stacks-foundation \
+# --build-arg OWNER=jupyter
 
 ARG ROOT_CONTAINER=ubuntu:22.04
 # Step 1/27 : ARG ROOT_CONTAINER=ubuntu:22.04
@@ -461,7 +465,6 @@ USER ${NB_UID}
 
 WORKDIR "${HOME}"
 # Step 27/27 : WORKDIR "/home/jovyan"
-
 
 ######################################################
 
